@@ -1,17 +1,13 @@
-﻿namespace MusicFestivalManagement.Models
+﻿namespace MusicFestivalManagement.Dtos
 {
-    public class Performance
+    public class CreatePerformanceDto
     {
-        public int PerformanceId { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
         public string Genre { get; set; }
         public int Duration { get; set; } // σε λεπτά
-        public DateTime CreationDate { get; set; }
-        public string State { get; set; } // CREATED, SUBMITTED, REVIEWED, etc.
-        public int FestivalId { get; set; }
-        public Festival Festival { get; set; }
-        public string TechnicalRequirements { get; set; } // Μπορεί να είναι path σε αρχείο
+        public int FestivalId { get; set; } // Αναφορά στο Festival
+        public string TechnicalRequirements { get; set; } // Path σε αρχείο ή περιγραφή
         public string Setlist { get; set; } // JSON string για τα τραγούδια
         public string MerchandiseItems { get; set; } // JSON string για αντικείμενα εμπορίου
         public string PreferredRehearsalTimes { get; set; } // JSON string

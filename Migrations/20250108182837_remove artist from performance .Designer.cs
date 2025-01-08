@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MusicFestivalManagement.Models;
 
@@ -11,9 +12,11 @@ using MusicFestivalManagement.Models;
 namespace MusicFestivalManagement.Migrations
 {
     [DbContext(typeof(FestivalContext))]
-    partial class FestivalContextModelSnapshot : ModelSnapshot
+    [Migration("20250108182837_remove artist from performance ")]
+    partial class removeartistfromperformance
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

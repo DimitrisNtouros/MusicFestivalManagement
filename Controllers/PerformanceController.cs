@@ -1,67 +1,84 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using MusicFestivalManagement.Dtos;
 using MusicFestivalManagement.Models;
-using MusicFestivalManagement.Service;
+using MusicFestivalManagement.Repository.Interfaces;
 
 namespace MusicFestivalManagement.Controllers;
 
-    [ApiController]
-    [Route("api/[controller]")]
-    public class PerformancesController : ControllerBase
-    {
-        private readonly PerformanceService _service;
+[ApiController]
+[Route("api/[controller]")]
+public class PerformancesController : ControllerBase
+{
+    private readonly IPerformanceRepository _repository;
 
-        public PerformancesController(PerformanceService service)
-        {
-            _service = service;
-        }
+    public PerformancesController(IPerformanceRepository repository)
+    {
+        _repository = repository;
+    }
 
     [HttpPost]
-    public async Task<IActionResult> CreatePerformance([FromBody] Performance performance, [FromQuery] string creatorName)
+    public async Task<IActionResult> CreatePerformance([FromBody] CreatePerformanceDto performance)
     {
-        if (string.IsNullOrEmpty(creatorName))
-            return BadRequest("Creator name is required.");
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
 
-        var createdPerformance = await _service.CreatePerformanceAsync(performance, creatorName);
-        return CreatedAtAction(nameof(GetPerformanceById), new { id = createdPerformance.PerformanceId }, createdPerformance);
+        await _repository.AddPerformanceAsync(performance);
+        return Ok();
     }
 
     [HttpGet]
-        public async Task<IActionResult> GetAllPerformances()
-        {
-            var performances = await _service.GetAllPerformancesAsync();
-            return Ok(performances);
-        }
-
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetPerformanceById(int id)
-        {
-            var performance = await _service.GetPerformanceByIdAsync(id);
-            if (performance == null)
-                return NotFound();
-            return Ok(performance);
-        }
-
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdatePerformance(int id, [FromBody] Performance performance)
-        {
-            if (id != performance.PerformanceId)
-                return BadRequest("ID mismatch");
-
-            await _service.UpdatePerformanceAsync(performance);
-            return NoContent();
-        }
-
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeletePerformance(int id)
-        {
-            await _service.DeletePerformanceAsync(id);
-            return NoContent();
-        }
-
-        [HttpGet("festival/{festivalId}")]
-        public async Task<IActionResult> GetPerformancesByFestivalId(int festivalId)
-        {
-            var performances = await _service.GetPerformancesByFestivalIdAsync(festivalId);
-            return Ok(performances);
-        }
+    public async Task<IActionResult> GetAllPerformances()
+    {
+        var performances = await _repository.GetAllPerformancesAsync();
+        return Ok(performances);
     }
+
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetPerformanceById(int id)
+    {
+        var performance = await _repository.GetPerformanceByIdAsync(id);
+        if (performance == null)
+            return NotFound();
+
+        return Ok(performance);
+    }
+
+/*    [HttpPut("{id}")]
+    public async Task<IActionResult> UpdatePerformance(int id, [FromBody] UpdatePerformanceDto performanceDto)
+    {
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+
+        if (id != performanceDto.Id)
+            return BadRequest("ID mismatch");
+
+        var performance = await _repository.GetPerformanceByIdAsync(id);
+        if (performance == null)
+            return NotFound();
+
+        performance.Name = performanceDto.Name;
+        performance.Date = performanceDto.Date;
+        performance.FestivalId = performanceDto.FestivalId;
+
+        await _repository.UpdatePerformanceAsync(performance);
+        return NoContent();
+    }*/
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeletePerformance(int id)
+    {
+        var performance = await _repository.GetPerformanceByIdAsync(id);
+        if (performance == null)
+            return NotFound();
+
+        await _repository.DeletePerformanceAsync(id);
+        return NoContent();
+    }
+
+    [HttpGet("festival/{festivalId}")]
+    public async Task<IActionResult> GetPerformancesByFestivalId(int festivalId)
+    {
+        var performances = await _repository.GetPerformancesByFestivalIdAsync(festivalId);
+        return Ok(performances);
+    }
+}

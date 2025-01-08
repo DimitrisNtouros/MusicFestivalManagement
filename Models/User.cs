@@ -18,4 +18,5 @@ public class User
     public string Salt { get; set; }
 
     public ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();
+    public ICollection<Performance> Performances { get; set; } = new List<Performance>();
 }

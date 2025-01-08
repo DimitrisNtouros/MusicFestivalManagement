@@ -7,7 +7,6 @@ using Microsoft.EntityFrameworkCore;
 using MusicFestivalManagement.Models;
 using MusicFestivalManagement.Helpers;
 using MusicFestivalManagement.Settings;
-using MusicFestivalManagement.Service;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -43,10 +42,6 @@ builder.Services.AddAuthentication(opt =>
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IPerformanceRepository, PerformanceRepository>();
 builder.Services.AddScoped<IFestivalRepository, FestivalRepository>();
-builder.Services.AddScoped<IArtistRepository, ArtistRepository>();
-builder.Services.AddScoped<ArtistService>();
-builder.Services.AddScoped<PerformanceService>();
-builder.Services.AddScoped<FestivalService>();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();

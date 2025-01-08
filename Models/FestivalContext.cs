@@ -14,10 +14,11 @@ public class FestivalContext : DbContext
     public virtual DbSet<Role> Roles { get; set; }
     public virtual DbSet<Festival> Festivals { get; set; }
     public virtual DbSet<Performance> Performances { get; set; }
+    public virtual DbSet<UserRole> UserRoles { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseSqlServer("Server=localhost,1433;Database=MusicFestival;User Id=sa;Password=yourStrong(!)Password;TrustServerCertificate=True;");
+        optionsBuilder.UseSqlServer("Server=localhost,1433;Database=MusicFestival2;User Id=sa;Password=yourStrong(!)Password;TrustServerCertificate=True;");
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -54,9 +55,6 @@ public class FestivalContext : DbContext
             entity.Property(a => a.Role)
                 .HasMaxLength(50);
 
-            entity.HasOne(a => a.Performance)
-                .WithMany(p => p.Artists)
-                .HasForeignKey(a => a.PerformanceId);
         });
 
         modelBuilder.Entity<User>(entity =>
@@ -108,10 +106,6 @@ public class FestivalContext : DbContext
             entity.HasOne(p => p.Festival) 
                 .WithMany(f => f.Performances) 
                 .HasForeignKey(p => p.FestivalId);
-
-            entity.HasMany(p => p.Artists) 
-                .WithOne(a => a.Performance) 
-                .HasForeignKey(a => a.PerformanceId);
 
             entity.Property(p => p.TechnicalRequirements)
                 .HasMaxLength(500); 

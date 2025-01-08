@@ -12,8 +12,8 @@ using MusicFestivalManagement.Models;
 namespace MusicFestivalManagement.Migrations
 {
     [DbContext(typeof(FestivalContext))]
-    [Migration("20241128145110_UserRole table")]
-    partial class UserRoletable
+    [Migration("20241212083205_fixing db")]
+    partial class fixingdb
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

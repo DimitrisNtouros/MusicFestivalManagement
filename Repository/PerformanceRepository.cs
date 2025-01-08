@@ -1,4 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using MusicFestivalManagement.Dtos;
+using MusicFestivalManagement.Extensions;
 using MusicFestivalManagement.Models;
 using MusicFestivalManagement.Repository.Interfaces;
 
@@ -16,14 +18,12 @@ namespace MusicFestivalManagement.Repository
         public async Task<Performance> GetPerformanceByIdAsync(int id)
         {
             return await _context.Performances
-                .Include(p => p.Artists)
                 .FirstOrDefaultAsync(p => p.PerformanceId == id);
         }
 
         public async Task<IEnumerable<Performance>> GetAllPerformancesAsync()
         {
             return await _context.Performances
-                .Include(p => p.Artists)
                 .ToListAsync();
         }
 
@@ -31,19 +31,26 @@ namespace MusicFestivalManagement.Repository
         {
             return await _context.Performances
                 .Where(p => p.FestivalId == festivalId)
-                .Include(p => p.Artists)
                 .ToListAsync();
         }
 
-        public async Task AddPerformanceAsync(Performance performance)
+        public async Task AddPerformanceAsync(CreatePerformanceDto performance)
         {
-            _context.Performances.Add(performance);
+            _context.Performances.Add(performance.ToPerformance());
             await _context.SaveChangesAsync();
         }
 
-        public async Task UpdatePerformanceAsync(Performance performance)
+        public async Task UpdatePerformanceAsync(UpdatePerformanceDto dto)
         {
-            _context.Performances.Update(performance);
+            var existingPerformance = await _context.Performances.FindAsync(dto.Id);
+
+            if (existingPerformance == null)
+            {
+                throw new Exception("Performance not found");
+            }
+
+            existingPerformance.Name = dto.Name;
+
             await _context.SaveChangesAsync();
         }
 
@@ -55,6 +62,11 @@ namespace MusicFestivalManagement.Repository
                 _context.Performances.Remove(performance);
                 await _context.SaveChangesAsync();
             }
+        }
+
+        public async Task<bool> FestivalExistsAsync(int festivalId)
+        {
+            return await _context.Festivals.AnyAsync(f => f.FestivalId == festivalId);
         }
 
         public async Task<bool> IsPerformanceNameUniqueAsync(string name, int festivalId)

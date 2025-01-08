@@ -5,7 +5,7 @@
 namespace MusicFestivalManagement.Migrations
 {
     /// <inheritdoc />
-    public partial class UserRoletable : Migration
+    public partial class fixingdb : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
